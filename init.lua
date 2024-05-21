@@ -75,6 +75,8 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('i', 'jk', '<Esc>')
 vim.keymap.set('n', '<leader>e', '<cmd> Vexplore<Cr>')
 vim.keymap.set('n', '<leader>ie', '<cmd> e .<Cr>')
+vim.keymap.set('n', '<leader>p', '+p')
+vim.keymap.set('n', '<leader>y', '+y')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
@@ -173,6 +175,15 @@ require('lazy').setup({
         },
       },
     },
+  },
+  -- markdown preview
+  {
+    'iamcco/markdown-preview.nvim',
+    cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
+    ft = { 'markdown' },
+    build = function()
+      vim.fn['mkdp#util#install']()
+    end,
   },
   -- dispatch vim
   { 'tpope/vim-dispatch' },
@@ -292,11 +303,15 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
+        defaults = {
+          mappings = {
+            i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+            n = {
+              ['<c-j>'] = require('telescope.actions').preview_scrolling_down,
+              ['<c-k>'] = require('telescope.actions').preview_scrolling_up,
+            },
+          },
+        },
         -- pickers = {}
         extensions = {
           ['ui-select'] = {
@@ -847,6 +862,17 @@ require('lazy').setup({
   },
 })
 
+-- Settings Vim-Dispatch
+vim.keymap.set('n', '<leader>m', ':Make')
+vim.keymap.set('n', '<leader>co', '<cmd> Copen<Cr>')
+vim.keymap.set('n', '<leader>cc', '<cmd> cclose<Cr>')
+vim.opt.makeprg = 'cmake --build build'
+
+-- Markdown Preview
+vim.keymap.set('n', '<leader>mp', '<Plug>MarkdownPreview')
+vim.keymap.set('n', '<leader>ms', '<Plug>MarkdownPreviewStop')
+vim.keymap.set('n', '<leader>mt', '<Plug>MarkdownPreviewToggle')
+
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 
@@ -858,18 +884,5 @@ vim.g.cpp_member_highlight = 1 -- Highlight struct/class member variables (affec
 -- (affects both C and C++ files)
 -- let g:cpp_simple_highlight = 0
 vim.g.cpp_class_scope_highlight = 1
---Highlighting of member variables is disabled by default. To enable set
-vim.g.cpp_member_variable_highlight = 1
-
---"Highlighting of class names in declarations is disabled by default. To enable set
-
-vim.g.cpp_class_decl_highlight = 1
-
---"ighlighting of POSIX functions is disabled by default. To enable set
-
-vim.g.cpp_posix_standard = 1
-
---"here are two ways to highlight template functions. Either
-vim.g.cpp_experimental_simple_template_highlight = 1
 --"hich works in most cases, but can be a little slow on large files. Alternatively set
 vim.g.cpp_experimental_template_highlight = 0
